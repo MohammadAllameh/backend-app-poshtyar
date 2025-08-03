@@ -15,6 +15,7 @@ export class UploadsService {
       throw new BadRequestException('Invalid or missing ENCRYPTION_KEY');
     }
     this.encryptionKey = Buffer.from(key, 'hex');
+    this.ensureDirectories();
   }
 
   // تنظیمات ذخیره‌سازی برای آواتار
@@ -29,7 +30,7 @@ export class UploadsService {
     });
   }
 
-  // فیلتر فرمت‌های مجاز برای آواتار
+  //フィルتر فرمت‌های مجاز برای آواتار
   avatarFileFilter(req, file, cb) {
     const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png'];
     if (allowedMimes.includes(file.mimetype)) {
@@ -70,10 +71,16 @@ export class UploadsService {
 
   // رمزنگاری فایل
   encryptFile(file: Express.Multer.File): Buffer {
+    if (!file || !file.path) {
+      throw new BadRequestException('فایل معتبر نیست یا مسیر فایل وجود ندارد');
+    }
+    console.log('Encrypting file:', file);
+    // خواندن فایل از دیسک
+    const fileBuffer = fs.readFileSync(file.path);
     const iv = crypto.randomBytes(16); // تولید IV تصادفی
     const cipher = crypto.createCipheriv('aes-256-gcm', this.encryptionKey, iv);
     const encrypted = Buffer.concat([
-      cipher.update(file.buffer),
+      cipher.update(fileBuffer),
       cipher.final(),
     ]);
     const authTag = cipher.getAuthTag();
@@ -98,7 +105,7 @@ export class UploadsService {
   // اطمینان از وجود پوشه‌ها
   ensureDirectories() {
     const avatarDir = './uploads/avatars';
-    const documentDir = './uploads/documents';
+    const documentDir = './Uploads/documents';
     if (!fs.existsSync(avatarDir)) {
       fs.mkdirSync(avatarDir, { recursive: true });
     }

@@ -22,7 +22,7 @@ export class UploadsController {
   }
 
   @Post('avatar')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: UploadsService.prototype.getAvatarStorage(),
@@ -35,11 +35,11 @@ export class UploadsController {
       throw new BadRequestException('فایلی آپلود نشده است');
     }
     const baseUrl =
-      this.configService.get<string>('BASE_URL') || 'http://localhost:3000';
+      this.configService.get<string>('BASE_URL') || 'http://localhost:5000';
     const fileUrl = `${baseUrl}/uploads/avatars/${file.filename}`;
     return {
       message: 'آواتار با موفقیت آپلود شد',
-      fileUrl, // لینک کامل
+      fileUrl,
     };
   }
 
@@ -59,6 +59,10 @@ export class UploadsController {
     // رمزنگاری فایل
     const encryptedData = this.uploadsService.encryptFile(file);
     fs.writeFileSync(file.path, encryptedData);
+    // حذف فایل موقت غیررمزنگاری‌شده
+    if (file.path && fs.existsSync(file.path.replace('.enc', ''))) {
+      fs.unlinkSync(file.path.replace('.enc', ''));
+    }
     return {
       message: 'سند با موفقیت آپلود و رمزنگاری شد',
       filePath: `uploads/documents/${file.filename}`,
