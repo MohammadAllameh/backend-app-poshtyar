@@ -8,10 +8,10 @@ import cookieParser from 'cookie-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/', // مسیر صحیح برای فایل‌های استاتیک
-    index: false,
-  });
+  // app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+  //   prefix: '/uploads/', // مسیر صحیح برای فایل‌های استاتیک
+  //   index: false,
+  // });
   // app.use(bodyParser.json({ limit: '1mb' }));
   // app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));
   // app.use(express.static(join(__dirname, '..', 'uploads'), { index: false }));
