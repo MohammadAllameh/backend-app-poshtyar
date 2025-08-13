@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
@@ -37,8 +41,8 @@ export class UsersService {
     return user;
   }
 
-  async findByEmail(email: string): Promise<User> {
-    const user = await this.userModel.findOne({ email }).exec();
+  async findByEmail(companyEmail: string): Promise<User> {
+    const user = await this.userModel.findOne({ companyEmail }).exec();
     if (!user) {
       throw new BadRequestException('سازمانی پیدا نشد');
     }
@@ -66,16 +70,16 @@ export class UsersService {
     return deletedUser;
   }
 
-  async generateOtp(email: string): Promise<string> {
-    const user = await this.findByEmail(email);
+  async generateOtp(companyEmail: string): Promise<string> {
+    const user = await this.findByEmail(companyEmail);
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-    await this.userModel.updateOne({ email }, { otpCode, otpExpiresAt });
+    await this.userModel.updateOne({ companyEmail }, { otpCode, otpExpiresAt });
     return otpCode; // In production, send via email/SMS
   }
 
-  async verifyOtp(email: string, otpCode: string): Promise<boolean> {
-    const user = await this.findByEmail(email);
+  async verifyOtp(companyEmail: string, otpCode: string): Promise<boolean> {
+    const user = await this.findByEmail(companyEmail);
     if (!user.otpCode || user.otpExpiresAt! < new Date()) {
       throw new BadRequestException('کد تایید منقضی شده است');
     }
@@ -83,9 +87,24 @@ export class UsersService {
       throw new BadRequestException('کد تایید نادرست است');
     }
     await this.userModel.updateOne(
-      { email },
+      { companyEmail },
       { isVerified: true, otpCode: null, otpExpiresAt: null },
     );
     return true;
+  }
+
+  async updatePassword(
+    companyEmail: string,
+    newPassword: string,
+  ): Promise<void> {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const result = await this.userModel.updateOne(
+      { companyEmail },
+      { $set: { password: hashedPassword } },
+    );
+
+    if (result.matchedCount === 0) {
+      throw new NotFoundException(`User with email ${companyEmail} not found.`);
+    }
   }
 }

@@ -19,18 +19,14 @@ export class CreateUserDto {
   @Matches(/^(?!.*@(gmail\.com|yahoo\.com)$).*$/, {
     message: 'یک ایمیل سازمانی وارد کنید',
   })
-  email: string;
+  companyEmail: string;
 
   @IsString()
   @IsNotEmpty()
   password: string;
 
-  @IsString()
-  @IsOptional()
-  avatar?: string;
-
   @IsNumber()
-  @IsOptional()
+  @IsNotEmpty()
   activeOperatorsCount?: number;
 
   @IsString()
@@ -43,9 +39,6 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   website?: string;
-
-  @IsEnum(['admin', 'user'])
-  role: string;
 
   @IsEnum(OrganizationalRole)
   @IsNotEmpty()

@@ -18,7 +18,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    origin: true,
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
     // origin: 'https://demo.poshtyar.com', // دامنه کلاینت شما
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // متدهای مجاز
     credentials: true, // اگر نیاز به کوکی یا توکن دارید

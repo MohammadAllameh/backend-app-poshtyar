@@ -59,7 +59,7 @@ export class NotificationsService {
         error,
       );
       throw new InternalServerErrorException(
-        `Failed to send email: ${error.message}`,
+        `ارسال ایمیل با خطا مواجه شده است لطفا مجدد امتحان کنید`,
       );
     }
   }
