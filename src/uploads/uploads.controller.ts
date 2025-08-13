@@ -1,25 +1,25 @@
 import {
   Controller,
   Post,
-  UploadedFile,
-  UseInterceptors,
-  BadRequestException,
+  // UploadedFile,
+  // UseInterceptors,
+  // BadRequestException,
   UseGuards,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+// import { FileInterceptor } from '@nestjs/platform-express';
 // import { UploadsService } from './uploads.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import * as fs from 'fs';
-import { ConfigService } from '@nestjs/config';
+// import * as fs from 'fs';
+// import { ConfigService } from '@nestjs/config';
 
 @Controller('uploads')
 export class UploadsController {
-  constructor(
-    // private readonly uploadsService: UploadsService,
-    private readonly configService: ConfigService,
-  ) {
-    // this.uploadsService.ensureDirectories();
-  }
+  // constructor(
+  //   // private readonly uploadsService: UploadsService,
+  //   private readonly configService: ConfigService,
+  // ) {
+  //   // this.uploadsService.ensureDirectories();
+  // }
 
   // @Post('avatar')
   // @UseGuards(JwtAuthGuard)
