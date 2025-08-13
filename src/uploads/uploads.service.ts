@@ -104,8 +104,10 @@ export class UploadsService {
 
   // اطمینان از وجود پوشه‌ها
   ensureDirectories() {
-    const avatarDir = './uploads/avatars';
-    const documentDir = './Uploads/documents';
+    // const avatarDir = './uploads/avatars';
+    // const documentDir = './Uploads/documents';
+    const avatarDir = './tmp/avatars';
+    const documentDir = './tmp/documents';
     if (!fs.existsSync(avatarDir)) {
       fs.mkdirSync(avatarDir, { recursive: true });
     }
