@@ -18,8 +18,10 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
-    // origin: 'https://demo.poshtyar.com', // دامنه کلاینت شما
+    origin: [
+      process.env.CLIENT_URL || 'https://poshtyar.com',
+      process.env.CLIENT_URL_PANEL || 'https://panel.poshtyar.com',
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // متدهای مجاز
     credentials: true, // اگر نیاز به کوکی یا توکن دارید
   });
